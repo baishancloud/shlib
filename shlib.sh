@@ -1,5 +1,5 @@
 #!/bin/sh
 
-source shlib_color.sh
-source shlib_log.sh
-source shlib_git.sh
+source shlib/shlib_color.sh
+source shlib/shlib_log.sh
+source shlib/shlib_git.sh
