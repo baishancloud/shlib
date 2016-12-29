@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source shlib/shlib_log.sh
+source shlib_log.sh
 
 git_hash()
 {

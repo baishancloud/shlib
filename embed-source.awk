@@ -1,10 +1,11 @@
 {
     if ($1 == "source" && system("test -f '"$2"'") == 0) {
         print "#include '" $2 "' begin"
-        while ((getline line < $2) > 0) {
+        p = "dist/"$2
+        while ((getline line < p) > 0) {
             print line
         }
-        close($2)
+        close(p)
         print "#include '" $2 "' end"
     }
     else {
