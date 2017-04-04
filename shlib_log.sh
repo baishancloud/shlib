@@ -2,11 +2,11 @@
 
 
 SHLIB_LOG_VERBOSE=1
-SHLIB_LOG_FORMAT='$title $mes'
+SHLIB_LOG_FORMAT='[$(date +"%Y-%m-%d %H:%M:%S")] $level $title $mes'
 
 die()
 {
-    echo "Failure $@" >&2
+    err "$@" >&2
     exit 1
 }
 die_empty()
@@ -27,6 +27,7 @@ log()
 {
     local color="$1"
     local title="$2"
+    local level="$_LOG_LEVEL"
     shift
     shift
 
@@ -35,6 +36,7 @@ log()
 
     if [ -t 1 ]; then
         title="${color}${title}${NC}"
+        level="${color}${level}${NC}"
     fi
     eval "echo \"$SHLIB_LOG_FORMAT\""
 }
@@ -46,22 +48,25 @@ debug()
 {
     if [ ".$SHLIB_LOG_VERBOSE" = ".1" ]; then
         local LightCyan="$(tput bold ; tput setaf 6)"
-        log "$LightCyan" "$@"
+        _LOG_LEVEL=DEBUG log "$LightCyan" "$@"
     fi
 }
 info()
 {
     local Brown="$(tput setaf 3)"
-    _LOG_LEVEL=INFO log "$Brown" "$@"
+    _LOG_LEVEL=" INFO" log "$Brown" "$@"
 }
 ok() {
     local Green="$(tput setaf 2)"
-    _LOG_LEVEL=OK log "${Green}" "$@"
+    _LOG_LEVEL="   OK" log "${Green}" "$@"
 }
 err() {
     local Red="$(tput setaf 1)"
-    _LOG_LEVEL=ERR log "${Red}" "$@"
+    _LOG_LEVEL="ERROR" log "${Red}" "$@"
 }
 
-SHLIB_LOG_FORMAT='$(date) $title $mes'
-log "$(tput setaf 3)" title mes mes2
+dd a b c
+info a b c
+ok a b c
+err a b c
+die a b c
