@@ -2,16 +2,18 @@
 # coding: utf-8
 
 import re
+import sys
 
 skip_in_subfile = (
-        '^#!/bin/sh',
+    '^#!/bin/sh',
 )
 
-def doit(fn, passed=None, skip=()):
 
-    print 'doit:', fn
-    if passed is None:
-        passed = {}
+def embed_source(fn, processed=None, skip=()):
+
+    if processed is None:
+        processed = {}
+
     lines = []
 
     with open(fn, 'r') as f:
@@ -33,27 +35,24 @@ def doit(fn, passed=None, skip=()):
                 continue
 
             subfn = m.groups()[0]
-            print 'subfn:', subfn, passed
 
-            if subfn in passed:
+            if subfn in processed:
                 continue
 
-            passed[subfn] = True
-            sublines = doit(subfn, passed, skip=skip_in_subfile)
+            processed[subfn] = True
+            sublines = embed_source(subfn,
+                                    processed=processed,
+                                    skip=skip_in_subfile)
             lines.extend(sublines)
 
     return lines
 
 
-
 if __name__ == "__main__":
-
-    import sys
 
     fn = sys.argv[1]
     dist = sys.argv[2]
 
-
-    lines = doit(fn)
+    lines = embed_source(fn)
     with open(dist + '/' + fn, 'w') as f:
         f.write(''.join(lines))
