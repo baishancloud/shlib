@@ -277,22 +277,42 @@ git_diff_ln_new()
     # 307 309
     # 350 350
     #
-    # add lines:
+    # Usage:
+    #
+    #   diff working tree with HEAD:
+    #       git_diff_ln_new HEAD -- <fn>
+    #
+    #   diff working tree with staged:
+    #       git_diff_ln_new -- <fn>
+    #
+    #   diff staged(cached) with HEAD:
+    #       git_diff_ln_new --cached -- <fn>
+    #
+    # in git-diff output:
+    # for add lines:
     # @@ -53 +72,8
-    # remove lines:
+    #
+    # for remove lines:
     # @@ -155 +179,0
 
     git diff -U0 "$@" \
         | grep '^@@' \
         | awk '{
-    l=$3
+
+    # @@ -155 +179,0
+    # $1 $2   $3
+
+    l = $3
     gsub("^+", "", l)
+
+    # add default offset: ",1"
     split(l",1", x, ",")
 
-    # inclusive line range: 
-    x[2]=x[1]+x[2]-1
+    # inclusive line range:
+    x[2] = x[1] + x[2] - 1
 
-    # line remove: @@ -155, +179,0
+    # line remove format: @@ -155, +179,0
+    # do need to output line range for removed.
     if (x[2] >= x[1]) {
         print x[1] " " x[2]
     }
