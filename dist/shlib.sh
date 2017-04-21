@@ -30,6 +30,17 @@ shlib_init_colors()
     NC="$(                      tput sgr0)" # No Color
 }
 
+fn_match()
+{
+    # $0 a.txt *.txt
+    case "$1" in
+        $2)
+            return 0
+            ;;
+    esac
+    return 1
+}
+
 screen_width()
 {
     local chr="${1--}"
