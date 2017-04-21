@@ -232,7 +232,7 @@ git_head_branch()
     git symbolic-ref --short HEAD
 }
 
-git_copy_commit()
+git_commit_copy()
 {
     # We're going to set some environment vars here, so
     # do it in a subshell to get rid of them safely later
@@ -256,6 +256,18 @@ git_copy_commit()
 
     git commit-tree "$2" $3  # reads the rest of stdin
     ) || die "Can't copy commit $1"
+}
+
+git_objetct_type()
+{
+    # $0 ref|hash
+    # output "commit", "tree" etc
+    git cat-file -t "$@" 2>/dev/null
+}
+
+git_copy_commit()
+{
+    git_commit_copy "$@"
 }
 
 git_diff_ln_new()
