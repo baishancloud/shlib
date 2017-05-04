@@ -1,9 +1,9 @@
 #!/bin/sh
 
 python2 embed.py shlib.sh        dist
-python2 embed.py shlib_color.sh  dist
-python2 embed.py shlib_format.sh dist
-python2 embed.py shlib_git.sh    dist
-python2 embed.py shlib_log.sh    dist
+
+cat shlib.sh | grep source | while read src fn; do
+python2 embed.py $fn        dist
+done
 
 chmod +x dist/*

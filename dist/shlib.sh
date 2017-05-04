@@ -30,17 +30,6 @@ shlib_init_colors()
     NC="$(                      tput sgr0)" # No Color
 }
 
-fn_match()
-{
-    # $0 a.txt *.txt
-    case "$1" in
-        $2)
-            return 0
-            ;;
-    esac
-    return 1
-}
-
 screen_width()
 {
     local chr="${1--}"
@@ -113,6 +102,7 @@ text_hr()
 }
 
 
+
 SHLIB_LOG_VERBOSE=1
 SHLIB_LOG_FORMAT='[$(date +"%Y-%m-%d %H:%M:%S")] $level $title $mes'
 
@@ -176,7 +166,6 @@ err() {
     local Red="$(tput setaf 1)"
     _LOG_LEVEL="ERROR" log "${Red}" "$@"
 }
-
 
 git_hash()
 {
@@ -309,4 +298,72 @@ git_diff_ln_new()
     }
 
 }'
+}
+
+
+os_detect()
+{
+    local os
+    case $(uname -s) in
+        Linux)
+            os=linux ;;
+        *[bB][sS][dD])
+            os=bsd ;;
+        Darwin)
+            os=mac ;;
+        *)
+            os=unix ;;
+    esac
+    echo $os
+}
+
+mac_ac_power_connection()
+{
+    #  Connected: (Yes|No)
+    system_profiler SPPowerDataType \
+        | sed '1,/^ *AC Charger Information:/d' \
+        | grep Connected:
+}
+
+
+mac_power()
+{
+
+    # $0 is-battery          exit code 0 if using battery.
+    # $0 is-ac-power         exit code 0 if using ac power.
+
+    local cmd="$1"
+    local os=$(os_detect)
+
+    if [ "$os" != "mac" ]; then
+        err "not mac but: $os"
+        return 1
+    fi
+
+    case $cmd in
+
+        is-battery)
+            mac_ac_power_connection | grep -q No
+            ;;
+
+        is-ac-power)
+            mac_ac_power_connection | grep -q Yes
+            ;;
+
+        *)
+            err "invalid cmd: $cmd"
+            return 1
+            ;;
+    esac
+}
+
+fn_match()
+{
+    # $0 a.txt *.txt
+    case "$1" in
+        $2)
+            return 0
+            ;;
+    esac
+    return 1
 }
