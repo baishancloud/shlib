@@ -232,6 +232,30 @@ git_head_branch()
     git symbolic-ref --short HEAD
 }
 
+git_commit_date()
+{
+
+    # git_commit_date author|commit <ref> [date-format]
+
+    # by default output author-date
+    local what_date="%ad"
+    if [ "$1" = "commit" ]; then
+        # commit date instead of author date
+        what_date="%cd"
+    fi
+    shift
+
+    local ref=$1
+    shift
+
+    local fmt="%Y-%m-%d %H:%M:%S"
+    if [ "$#" -gt 0 ]; then
+        fmt="$1"
+    fi
+    shift
+
+    git log -n1 --format="$what_date" --date=format:"$fmt" "$ref"
+}
 git_commit_copy()
 {
     # We're going to set some environment vars here, so
