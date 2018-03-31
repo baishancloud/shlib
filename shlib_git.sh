@@ -149,7 +149,13 @@ git_object_add_by_tree_name()
 
     local target_dir="$(dirname $target_path)/"
     local target_fn="$(basename $target_path)"
-    local treeish=$(git ls-tree "$src_treeish" "$src_name" | awk '{print $3}')
+    local treeish
+
+    if [ -z "$src_name" ] || [ "$src_name" = "." ] || [ "$src_name" = "./" ]; then
+        treeish="$src_treeish"
+    else
+        treeish=$(git ls-tree "$src_treeish" "$src_name" | awk '{print $3}')
+    fi
 
     dd "hash of object to add is: $treeish"
 
@@ -177,13 +183,20 @@ git_object_add_by_tree_name()
         dd "target_path set to: $target_path"
     else
         dd "object to add is tree"
-
-        treeish=$(git ls-tree "$src_treeish" "$src_name" | awk '{print $3}')
-        dd "updated treeish: $treeish"
     fi
+
+    git_treeish_add_to_prefix "$target_path" "$treeish"
+}
+
+git_treeish_add_to_prefix()
+{
+    local target_path="$1"
+    local treeish="$2"
 
     dd treeish content:
     git ls-tree $treeish
+
+    git rm "$target_path" -r --cached || dd removing target "$target_path"
 
     if [ "$target_path" = "./" ]; then
         git read-tree "$treeish" \
