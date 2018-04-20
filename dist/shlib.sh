@@ -212,6 +212,11 @@ git_working_root()
     git rev-parse --show-toplevel
 }
 
+git_rev_exist()
+{
+    git rev-parse --verify --quiet "$1" >/dev/null
+}
+
 git_branch_default_remote()
 {
     local branchname=$1
