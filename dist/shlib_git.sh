@@ -128,7 +128,10 @@ git_branch_default_upstream_ref()
 }
 git_branch_default_upstream()
 {
-    git_branch_default_upstream_ref "$@" | sed 's/^refs\/heads\///'
+    git rev-parse --abbrev-ref --symbolic-full-name "$1"@{upstream}
+
+    # OR
+    # git_branch_default_upstream_ref "$@" | sed 's/^refs\/heads\///'
 }
 git_branch_exist()
 {
