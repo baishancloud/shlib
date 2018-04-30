@@ -130,6 +130,10 @@ git_branch_default_upstream()
 {
     git_branch_default_upstream_ref "$@" | sed 's/^refs\/heads\///'
 }
+git_branch_exist()
+{
+    git_rev_exist "refs/heads/$1"
+}
 
 git_head_branch()
 {
