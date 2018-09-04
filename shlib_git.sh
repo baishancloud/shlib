@@ -257,6 +257,38 @@ git_tree_add_blob()
     } | git mktree
 }
 
+git_workdir_save()
+{
+    local index_hash=$(git write-tree)
+
+    # add modified file to index and read index tree
+    git add -u
+    local working_hash=$(git write-tree)
+
+    # restore index tree
+    git read-tree $index_hash
+
+    echo $index_hash $working_hash
+}
+git_workdir_load()
+{
+    local index_hash=$1
+    local working_hash=$2
+
+    git_object_type $index_hash || die "invalid index hash: $index_hash"
+    git_object_type $working_hash || die "invalid workdir hash: $working_hash"
+
+    # First create a temp commit to restore working tree.
+    #
+    # git-read-index to index and git-reset does not work because deleted file in
+    # index does not apply to working tree.
+
+    local working_commit=$(echo "x" | git commit-tree $working_hash) || die get working commit
+    git reset --hard $working_commit || die reset to tmp commit
+    git reset --soft ORIG_HEAD || die reset to ORIG_HEAD
+    git read-tree $index_hash || die "load saved index tree from $index_hash"
+}
+
 git_copy_commit()
 {
     git_commit_copy "$@"
