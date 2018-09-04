@@ -447,6 +447,11 @@ git_workdir_load()
     #
     # git-read-index to index and git-reset does not work because deleted file in
     # index does not apply to working tree.
+    #
+    # But there is an issue with this:
+    #   git checkout --orphan br
+    #   git_workdir_load
+    # would fails, because ORIG_HEAD is not a commit.
 
     local working_commit=$(echo "x" | git commit-tree $working_hash) || die get working commit
     git reset --hard $working_commit || die reset to tmp commit
