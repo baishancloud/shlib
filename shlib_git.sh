@@ -167,6 +167,10 @@ git_object_add_by_tree_name()
         treeish="$src_treeish"
     else
         treeish=$(git ls-tree "$src_treeish" "$src_name" | awk '{print $3}')
+
+        if [ -z "$treeish" ]; then
+            die "source treeish not found: in tree: ($src_treeish) name: ($src_name)"
+        fi
     fi
 
     dd "hash of object to add is: $treeish"
