@@ -462,6 +462,15 @@ git_workdir_load()
     git reset --soft ORIG_HEAD || die reset to ORIG_HEAD
     git read-tree $index_hash || die "load saved index tree from $index_hash"
 }
+git_workdir_is_clean()
+{
+    local untracked="$1"
+    if [ "$untracked" == "untracked" ]; then
+        [ -z "$(git status --porcelain)" ]
+    else
+        [ -z "$(git status --porcelain --untracked-files=no)" ]
+    fi
+}
 
 git_copy_commit()
 {
