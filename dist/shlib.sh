@@ -150,7 +150,7 @@ debug()
 {
     if [ ".$SHLIB_LOG_VERBOSE" = ".1" ]; then
         local LightCyan="$(tput bold ; tput setaf 6)"
-        _LOG_LEVEL=DEBUG log "$LightCyan" "$@"
+        _LOG_LEVEL=DEBUG log "$LightCyan" "$@" >&2
     fi
 }
 info()
