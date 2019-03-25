@@ -1,6 +1,36 @@
 #!/bin/sh
 
 
+clr()
+{
+    # clr light read blabla
+
+    local black=0
+    local white=7
+    local red=1
+    local green=2
+    local brown=3
+    local blue=4
+    local purple=5
+    local cyan=6
+
+    local light=""
+    local color=$1
+    shift
+
+    if [ "$color" == "light" ]; then
+        light="tput bold; "
+        color=$1
+        shift
+    fi
+
+    local code=$(eval 'echo $'$color)
+    local cmd="${light}tput setaf $code"
+    local color_str="$(eval "$cmd")"
+
+    echo $color_str"$@""$(tput sgr0)"
+}
+
 shlib_init_colors()
 {
     Black="$(                   tput setaf 0)"
@@ -29,6 +59,7 @@ shlib_init_colors()
     LightCyan="$(    tput bold; tput setaf 6)"
     NC="$(                      tput sgr0)" # No Color
 }
+
 
 screen_width()
 {
