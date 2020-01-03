@@ -46,6 +46,10 @@ git_working_root()
 {
     git rev-parse --show-toplevel
 }
+git_gitdir()
+{
+    git rev-parse --git-dir
+}
 
 git_rev_exist()
 {
