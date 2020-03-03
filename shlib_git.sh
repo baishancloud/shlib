@@ -83,6 +83,12 @@ git_head_branch()
     git symbolic-ref --short HEAD
 }
 
+git_tag_of()
+{
+    # git describe --exact-match --tags HEAD
+    git describe --tags "$1" 2>/dev/null
+}
+
 git_commit_date()
 {
 
